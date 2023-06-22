@@ -23,10 +23,13 @@
 		<!-- NMS selector -->
 		<module>commandapi-bukkit-vh</module>
 
+		<!-- Testing -->
+		<module>commandapi-bukkit-test</module>
+
 		<!-- Outputs -->
 		<module>commandapi-bukkit-plugin</module>
-		<module>commandapi-bukkit-test</module>
 		<module>commandapi-bukkit-shade</module>
 		<module>commandapi-bukkit-kotlin</module>
+		<module>commandapi-bukkit-test-toolkit</module>
 	</modules>
 </project>
