@@ -92,6 +92,7 @@ public abstract class CommandAPIBukkit<Source> implements CommandAPIPlatform<Arg
 	private static CommandAPIBukkit<?> instance;
 	private static InternalBukkitConfig config;
 	private PaperImplementations paper;
+	private BukkitCommandAPIMessenger messenger;
 
 	// Namespaces
 	private final Set<String> namespacesToFix = new HashSet<>();
@@ -798,7 +799,12 @@ public abstract class CommandAPIBukkit<Source> implements CommandAPIPlatform<Arg
 
 	@Override
 	public BukkitCommandAPIMessenger setupMessenger() {
-		return new BukkitCommandAPIMessenger(CommandAPIProtocol.CHANNEL_NAME, getConfiguration().getPlugin());
+		messenger = new BukkitCommandAPIMessenger(CommandAPIProtocol.CHANNEL_NAME, getConfiguration().getPlugin());
+		return messenger;
+	}
+
+	public BukkitCommandAPIMessenger getMessenger() {
+		return messenger;
 	}
 
 	@Override
