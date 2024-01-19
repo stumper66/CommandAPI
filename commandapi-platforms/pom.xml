@@ -12,13 +12,17 @@
 
 	<artifactId>commandapi-platforms</artifactId>
 	<packaging>pom</packaging>
+    <modules>
+    </modules>
 
-	<profiles>
+    <profiles>
 		<!-- Choose which platforms get built -->
 		<profile>
 			<id>Platform.Bukkit</id>
 			<modules>
 				<module>commandapi-bukkit</module>
+				<module>commandapi-paper</module>
+        		<module>commandapi-spigot</module>
 				<module>../commandapi-kotlin/commandapi-core-kotlin</module>
 				<module>../commandapi-kotlin/commandapi-bukkit-kotlin</module>
 				<module>../commandapi-documentation-code</module>

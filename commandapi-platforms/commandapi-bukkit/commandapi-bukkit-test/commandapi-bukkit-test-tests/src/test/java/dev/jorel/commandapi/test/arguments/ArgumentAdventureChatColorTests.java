@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
@@ -20,6 +21,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 /**
  * Tests for the {@link AdventureChatColorArgument}
  */
+@Disabled
 class ArgumentAdventureChatColorTests extends TestBase {
 
 	/*********

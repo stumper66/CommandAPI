@@ -19,7 +19,7 @@ import java.util.List;
  * @param <CommandSender> The class for running platforms commands
  * @param <Source> The class for running Brigadier commands
  */
-public interface CommandAPIPlatform<Argument
+public abstract class CommandAPIPlatform<Argument
 /// @cond DOX
 extends AbstractArgument<?, ?, Argument, CommandSender>
 /// @endcond
@@ -138,7 +138,7 @@ extends AbstractArgument<?, ?, Argument, CommandSender>
 	/**
 	 * @return A new default Logger meant for the CommandAPI to use
 	 */
-	public default CommandAPILogger getLogger() {
+	public CommandAPILogger getLogger() {
 		return new CommandAPILogger() {
 			private static final String PREFIX = "[CommandAPI] ";
 			private static final String YELLOW = "\u001B[33m";

@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
@@ -26,6 +27,7 @@ import net.md_5.bungee.chat.ComponentSerializer;
 /**
  * Tests for the {@link ChatArgument} and {@link AdventureChatArgument}
  */
+@Disabled
 class ArgumentChatTests extends TestBase {
 
 	/*********

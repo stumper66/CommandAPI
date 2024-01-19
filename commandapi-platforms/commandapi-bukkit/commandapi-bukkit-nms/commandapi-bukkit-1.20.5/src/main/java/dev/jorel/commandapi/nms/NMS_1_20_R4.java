@@ -405,25 +405,6 @@ public class NMS_1_20_R4 extends NMS_Common {
 			throws CommandSyntaxException {
 		return ResourceLocationArgument.getAdvancement(cmdCtx, key).toBukkit();
 	}
-	
-	@Differs(from = "1.20.4", by = "Serializer.toJson now needs a Provider")
-	@Override
-	public Component getAdventureChat(CommandContext<CommandSourceStack> cmdCtx, String key) throws CommandSyntaxException {
-		return GsonComponentSerializer.gson().deserialize(Serializer.toJson(MessageArgument.getMessage(cmdCtx, key), COMMAND_BUILD_CONTEXT));
-	}
-
-	@Override
-	public NamedTextColor getAdventureChatColor(CommandContext<CommandSourceStack> cmdCtx, String key) {
-		final Integer color = ColorArgument.getColor(cmdCtx, key).getColor();
-		return color == null ? NamedTextColor.WHITE : NamedTextColor.namedColor(color);
-	}
-
-	@Override
-	public final Component getAdventureChatComponent(CommandContext<CommandSourceStack> cmdCtx, String key) {
-		// TODO: Figure out if an empty provider is suitable for this context
-		return GsonComponentSerializer.gson()
-				.deserialize(Serializer.toJson(ComponentArgument.getComponent(cmdCtx, key), COMMAND_BUILD_CONTEXT));
-	}
 
 	@Override
 	public final Object getBiome(CommandContext<CommandSourceStack> cmdCtx, String key, ArgumentSubType subType)
@@ -462,12 +443,6 @@ public class NMS_1_20_R4 extends NMS_Common {
 	public CommandSourceStack getBrigadierSourceFromCommandSender(
 			AbstractCommandSender<? extends CommandSender> sender) {
 		return VanillaCommandWrapper.getListener(sender.getSource());
-	}
-
-	@Differs(from = "1.20.4", by = "Serializer.toJson now needs a Provider")
-	@Override
-	public final BaseComponent[] getChat(CommandContext<CommandSourceStack> cmdCtx, String key) throws CommandSyntaxException {
-		return ComponentSerializer.parse(Serializer.toJson(MessageArgument.getMessage(cmdCtx, key), COMMAND_BUILD_CONTEXT));
 	}
 
 	@Override
