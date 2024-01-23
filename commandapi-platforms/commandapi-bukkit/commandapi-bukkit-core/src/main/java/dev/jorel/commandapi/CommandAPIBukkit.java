@@ -75,36 +75,40 @@ import net.md_5.bungee.api.chat.BaseComponent;
 public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 
 	// References to utility classes
-	private static CommandAPIBukkit<?> instance;
+	private static BukkitPlatform<?> instance;
+	private static CommandAPIBukkit<?> bukkit;
 	private static InternalBukkitConfig config;
-	// TODO: Remove because we want to get rid of PaperImplementations.java
-	private PaperImplementations paper;
 	private CommandRegistrationStrategy<Source> commandRegistrationStrategy;
 
 	protected CommandAPIBukkit() {
-		CommandAPIBukkit.instance = this;
+		CommandAPIBukkit.bukkit = this;
+	}
+
+	protected <T extends BukkitPlatform<?>> void setInstance(T instance) {
+		CommandAPIBukkit.instance = instance;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <Source> CommandAPIBukkit<Source> get() {
-		if(CommandAPIBukkit.instance != null) {
-			return (CommandAPIBukkit<Source>) instance;
-		} else {
-			throw new IllegalStateException("Tried to access CommandAPIBukkit instance, but it was null! Are you using CommandAPI features before calling CommandAPI#onLoad?");
+		if (CommandAPIBukkit.bukkit != null) {
+			return (CommandAPIBukkit<Source>) bukkit;
 		}
+		throw new IllegalStateException("Tried to access CommandAPIBukkit instance, but it was null! Are you using CommandAPI features before calling CommandAPI#onLoad?");
 	}
 
-	// TODO: Remove because we want to get rid of PaperImplementations.java
-	public PaperImplementations getPaper() {
-		return paper;
+	@SuppressWarnings("unchecked")
+	public static <T extends CommandAPIPlatform<?, ?, ?>> T getInstance() {
+		if (CommandAPIBukkit.instance != null) {
+			return (T) instance;
+		}
+		throw new IllegalStateException("Tried to access the Bukkit platform, but it was null! Are you using CommandAPI features before calling CommandPAI#onLoad?");
 	}
 
 	public static InternalBukkitConfig getConfiguration() {
-		if(config != null) {
+		if (config != null) {
 			return config;
-		} else {
-			throw new IllegalStateException("Tried to access InternalBukkitConfig, but it was null! Did you load the CommandAPI properly with CommandAPI#onLoad?");
 		}
+		throw new IllegalStateException("Tried to access InternalBukkitConfig, but it was null! Did you load the CommandAPI properly with CommandAPI#onLoad?");
 	}
 
 	public CommandRegistrationStrategy<Source> getCommandRegistrationStrategy() {
@@ -121,12 +125,11 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 
 		checkDependencies();
 	}
-	
+
 	private static void setInternalConfig(InternalBukkitConfig internalBukkitConfig) {
 		CommandAPIBukkit.config = internalBukkitConfig;
 	}
 
-	// TODO: Simplify because we want to get rid of PaperImplementations.java
 	private void checkDependencies() {
 		// Log successful hooks
 		Class<?> nbtContainerClass = CommandAPI.getConfiguration().getNBTContainerClass();
@@ -144,72 +147,7 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 			}
 		}
 
-		try {
-			Class.forName("net.kyori.adventure.text.Component");
-			CommandAPI.logNormal("Hooked into Adventure for AdventureChat/AdventureChatComponents");
-		} catch (ClassNotFoundException e) {
-			if (CommandAPI.getConfiguration().hasVerboseOutput()) {
-				CommandAPI.logWarning("Could not hook into Adventure for AdventureChat/AdventureChatComponents");
-			}
-		}
-
-		boolean isPaperPresent = false;
-
-		try {
-			Class.forName("io.papermc.paper.event.server.ServerResourcesReloadedEvent");
-			isPaperPresent = true;
-			CommandAPI.logNormal("Hooked into Paper for paper-specific API implementations");
-		} catch (ClassNotFoundException e) {
-			isPaperPresent = false;
-			if (CommandAPI.getConfiguration().hasVerboseOutput()) {
-				CommandAPI.logWarning("Could not hook into Paper for /minecraft:reload. Consider upgrading to Paper: https://papermc.io/");
-			}
-		}
-
-		boolean isFoliaPresent = false;
-
-		try {
-			Class.forName("io.papermc.paper.threadedregions.RegionizedServerInitEvent");
-			isFoliaPresent = true;
-			CommandAPI.logNormal("Hooked into Folia for folia-specific API implementations");
-			CommandAPI.logNormal("Folia support is still in development. Please report any issues to the CommandAPI developers!");
-		} catch (ClassNotFoundException e) {
-			isFoliaPresent = false;
-		}
-
-		paper = new PaperImplementations(isPaperPresent, isFoliaPresent, this);
-
-		commandRegistrationStrategy = createCommandRegistrationStrategy();
-	}
-
-	// TODO: Platform-specific because we want to get rid of PaperImplementations.java
-	public void onEnable() {
-		JavaPlugin plugin = config.getPlugin();
-
-		new Schedulers(paper).scheduleSyncDelayed(plugin, () -> {
-			commandRegistrationStrategy.runTasksAfterServerStart();
-
-			if (paper.isFoliaPresent()) {
-				CommandAPI.logNormal("Skipping initial datapack reloading because Folia was detected");
-			} else {
-				if (!getConfiguration().skipReloadDatapacks()) {
-					reloadDataPacks();
-				}
-			}
-			updateHelpForCommands(CommandAPI.getRegisteredCommands());
-		}, 0L);
-
-		// Prevent command registration after server has loaded
-		Bukkit.getServer().getPluginManager().registerEvents(new Listener() {
-			// We want the lowest priority so that we always get to this first, in case a dependent plugin is using
-			//  CommandAPI features in their own ServerLoadEvent listener for some reason
-			@EventHandler(priority = EventPriority.LOWEST)
-			public void onServerLoad(ServerLoadEvent event) {
-				CommandAPI.stopCommandRegistration();
-			}
-		}, getConfiguration().getPlugin());
-
-		paper.registerReloadHandler(plugin);
+		commandRegistrationStrategy = ((BukkitPlatform<Source>) instance).createCommandRegistrationStrategy();
 	}
 
 	/*
@@ -377,37 +315,8 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 	@Unimplemented(because = REQUIRES_CRAFTBUKKIT)
 	public abstract Source getBrigadierSourceFromCommandSender(AbstractCommandSender<? extends CommandSender> sender);
 
-	// TODO: Platform-specific because we want to get rid of PaperImplementations.java
 	public BukkitCommandSender<? extends CommandSender> wrapCommandSender(CommandSender sender) {
-		if (sender instanceof BlockCommandSender block) {
-			return new BukkitBlockCommandSender(block);
-		}
-		if (sender instanceof ConsoleCommandSender console) {
-			return new BukkitConsoleCommandSender(console);
-		}
-		if (sender instanceof Player player) {
-			return new BukkitPlayer(player);
-		}
-		if (sender instanceof org.bukkit.entity.Entity entity) {
-			return new BukkitEntity(entity);
-		}
-		if (sender instanceof NativeProxyCommandSender nativeProxy) {
-			return new BukkitNativeProxyCommandSender(nativeProxy);
-		}
-		if (sender instanceof ProxiedCommandSender proxy) {
-			return new BukkitProxiedCommandSender(proxy);	
-		}
-		if (sender instanceof RemoteConsoleCommandSender remote) {
-			return new BukkitRemoteConsoleCommandSender(remote);
-		}
-		if (paper.isPaperPresent()) {
-			final Class<? extends CommandSender> FeedbackForwardingSender = paper.getFeedbackForwardingCommandSender();
-			if (FeedbackForwardingSender.isInstance(sender)) {
-				// We literally cannot type this at compile-time, so let's use a placeholder CommandSender instance
-				return new BukkitFeedbackForwardingCommandSender<CommandSender>(FeedbackForwardingSender.cast(sender));
-			}
-		}
-		throw new RuntimeException("Failed to wrap CommandSender " + sender + " to a CommandAPI-compatible BukkitCommandSender");
+		return instance.wrapCommandSender(sender);
 	}
 
 	public void registerPermission(String string) {
@@ -442,7 +351,6 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 	}
 
 	// This method is fixed in a later commit
-	// TODO: Platform-specific because we want to get rid of PaperImplementations.java
 	public void postCommandRegistration(RegisteredCommand registeredCommand, LiteralCommandNode<Source> resultantNode, List<LiteralCommandNode<Source>> aliasNodes) {
 		commandRegistrationStrategy.postCommandRegistration(registeredCommand, resultantNode, aliasNodes);
 
@@ -506,7 +414,7 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 
 	@Unimplemented(because = {REQUIRES_MINECRAFT_SERVER, VERSION_SPECIFIC_IMPLEMENTATION})
 	public abstract void createDispatcherFile(File file, CommandDispatcher<Source> brigadierDispatcher) throws IOException;
-	
+
 	@Unimplemented(because = REQUIRES_MINECRAFT_SERVER) // What are the odds?
 	public abstract <T> T getMinecraftServer();
 
@@ -568,7 +476,7 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 	public static WrapperCommandSyntaxException failWithAdventureComponent(Component message) {
 		return CommandAPI.failWithMessage(BukkitTooltip.messageFromAdventureComponent(message));
 	}
-	
+
 	/**
 	 * Initializes the CommandAPI's implementation of an NBT API. If you are shading
 	 * the CommandAPI, you should be using
@@ -588,7 +496,7 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 	public static <T> void initializeNBTAPI(Class<T> nbtContainerClass, Function<Object, T> nbtContainerConstructor) {
 		getConfiguration().lateInitializeNBT(nbtContainerClass, nbtContainerConstructor);
 	}
-	
+
 	protected void registerBukkitRecipesSafely(Iterator<Recipe> recipes) {
 		Recipe recipe;
 		while (recipes.hasNext()) {

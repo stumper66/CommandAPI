@@ -2,6 +2,10 @@ package dev.jorel.commandapi.nms;
 
 import com.mojang.brigadier.context.CommandContext;
 import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkit;
+import dev.jorel.commandapi.CommandRegistrationStrategy;
+import dev.jorel.commandapi.SpigotCommandRegistration;
+import dev.jorel.commandapi.preprocessor.Differs;
 import dev.jorel.commandapi.preprocessor.Unimplemented;
 import io.netty.channel.Channel;
 import net.kyori.adventure.text.Component;
@@ -10,7 +14,11 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.ColorArgument;
 import net.minecraft.commands.arguments.ComponentArgument;
+import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.v1_19_R1.command.BukkitCommandWrapper;
+import org.bukkit.craftbukkit.v1_19_R1.command.VanillaCommandWrapper;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -90,6 +98,19 @@ public abstract class PaperNMS_1_19_Common extends PaperNMS_CommonWithFunctions 
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			unhookChatPreview(player);
 		}
+	}
+
+	@Override
+	@Differs(from = "1.18", by = "MinecraftServer#aA -> MinecraftServer#aC")
+	public CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy() {
+		return new SpigotCommandRegistration<>(
+			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
+			(SimpleCommandMap) getCommandMap(),
+			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+			command -> command instanceof VanillaCommandWrapper,
+			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> node.getCommand() instanceof BukkitCommandWrapper
+		);
 	}
 
 }

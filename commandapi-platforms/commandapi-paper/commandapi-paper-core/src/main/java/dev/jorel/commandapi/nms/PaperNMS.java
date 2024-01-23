@@ -18,12 +18,4 @@ public interface PaperNMS<CommandListenerWrapper> {
 
 	NMS<?> bukkitNMS();
 
-	/**
-	 * Wraps a Brigadier command node as Bukkit's VanillaCommandWrapper
-	 *
-	 * @param node The LiteralCommandNode to wrap
-	 * @return A VanillaCommandWrapper representing the given node
-	 */
-	Command wrapToVanillaCommandWrapper(CommandNode<CommandListenerWrapper> node);
-
 }

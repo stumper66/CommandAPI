@@ -552,10 +552,4 @@ public abstract class NMS_Common extends CommandAPIBukkit<CommandSourceStack> {
 	@Override
 	@Unimplemented(because = VERSION_SPECIFIC_IMPLEMENTATION)
 	public abstract void reloadDataPacks();
-
-	@Override
-	@Unimplemented(because = NAME_CHANGED, info = "MinecraftServer#getCommands() obfuscated differently across multiple versions")
-	@Unimplemented(because = REQUIRES_CRAFTBUKKIT, classNamed = "VanillaCommandWrapper")
-	@Unimplemented(because = REQUIRES_CRAFTBUKKIT, classNamed = "BukkitCommandWrapper")
-	public abstract CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy();
 }

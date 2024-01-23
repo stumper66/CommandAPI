@@ -946,15 +946,4 @@ public class NMS_1_16_R3 extends CommandAPIBukkit<CommandListenerWrapper> {
 		}
 	}
 
-	@Override
-	public CommandRegistrationStrategy<CommandListenerWrapper> createCommandRegistrationStrategy() {
-		return new SpigotCommandRegistration<>(
-			this.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.a(),
-			(SimpleCommandMap) getPaper().getCommandMap(),
-			() -> this.<MinecraftServer>getMinecraftServer().getCommandDispatcher().a(),
-			command -> command instanceof VanillaCommandWrapper,
-			node -> new VanillaCommandWrapper(this.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
-			node -> node.getCommand() instanceof BukkitCommandWrapper
-		);
-	}
 }

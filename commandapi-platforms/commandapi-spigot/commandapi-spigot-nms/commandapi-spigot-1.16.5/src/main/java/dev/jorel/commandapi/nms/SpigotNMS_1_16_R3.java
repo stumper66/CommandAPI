@@ -5,6 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPISpigot;
+import dev.jorel.commandapi.CommandRegistrationStrategy;
+import dev.jorel.commandapi.SpigotCommandRegistration;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.ArgumentChat;
@@ -15,6 +17,8 @@ import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.v1_16_R3.command.BukkitCommandWrapper;
 import org.bukkit.craftbukkit.v1_16_R3.command.VanillaCommandWrapper;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 
@@ -41,8 +45,15 @@ public class SpigotNMS_1_16_R3 extends CommandAPISpigot<CommandListenerWrapper> 
 	}
 
 	@Override
-	public Command wrapToVanillaCommandWrapper(CommandNode<CommandListenerWrapper> node) {
-		return new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node);
+	public CommandRegistrationStrategy<CommandListenerWrapper> createCommandRegistrationStrategy() {
+		return new SpigotCommandRegistration<>(
+			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.a(),
+			(SimpleCommandMap) getCommandMap(),
+			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommandDispatcher().a(),
+			command -> command instanceof VanillaCommandWrapper,
+			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> node.getCommand() instanceof BukkitCommandWrapper
+		);
 	}
 
 }

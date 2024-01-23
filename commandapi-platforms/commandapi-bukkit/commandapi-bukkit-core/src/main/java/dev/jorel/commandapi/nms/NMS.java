@@ -404,5 +404,4 @@ public interface NMS<CommandListenerWrapper> {
 
 	Message generateMessageFromJson(String json);
 
-	CommandRegistrationStrategy<CommandListenerWrapper> createCommandRegistrationStrategy();
 }

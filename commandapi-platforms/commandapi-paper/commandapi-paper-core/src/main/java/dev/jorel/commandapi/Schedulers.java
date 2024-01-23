@@ -4,14 +4,14 @@ import org.bukkit.plugin.Plugin;
 
 public class Schedulers {
 
-	private final PaperImplementations paperImplementations;
+	private final boolean isFoliaPresent;
 
-	public Schedulers(PaperImplementations paperImplementations) {
-		this.paperImplementations = paperImplementations;
+	public Schedulers(boolean isFoliaPresent) {
+		this.isFoliaPresent = isFoliaPresent;
 	}
 
 	public int scheduleSyncRepeatingTask(Plugin plugin, Runnable runnable, long delay, long period) {
-		if (paperImplementations.isFoliaPresent()) {
+		if (isFoliaPresent) {
 			plugin.getServer().getGlobalRegionScheduler().runAtFixedRate(plugin, task -> runnable.run(), delay, period);
 			return 1;
 		} else {
@@ -20,7 +20,7 @@ public class Schedulers {
 	}
 
 	public void cancelTask(Plugin plugin, int id) {
-		if (paperImplementations.isFoliaPresent()) {
+		if (isFoliaPresent) {
 			plugin.getServer().getGlobalRegionScheduler().cancelTasks(plugin);
 		} else {
 			plugin.getServer().getScheduler().cancelTask(id);
@@ -28,7 +28,7 @@ public class Schedulers {
 	}
 
 	public void scheduleSync(Plugin plugin, Runnable runnable) {
-		if (paperImplementations.isFoliaPresent()) {
+		if (isFoliaPresent) {
 			plugin.getServer().getGlobalRegionScheduler().execute(plugin, runnable);
 		} else {
 			plugin.getServer().getScheduler().runTask(plugin, runnable);
@@ -36,7 +36,7 @@ public class Schedulers {
 	}
 
 	public void scheduleSyncDelayed(Plugin plugin, Runnable runnable, long delay) {
-		if (paperImplementations.isFoliaPresent()) {
+		if (isFoliaPresent) {
 			plugin.getServer().getGlobalRegionScheduler().execute(plugin, runnable);
 		} else {
 			plugin.getServer().getScheduler().runTaskLater(plugin, runnable, delay);
@@ -44,7 +44,7 @@ public class Schedulers {
 	}
 
 	public void scheduleAsync(Plugin plugin, Runnable runnable) {
-		if (paperImplementations.isFoliaPresent()) {
+		if (isFoliaPresent) {
 			plugin.getServer().getGlobalRegionScheduler().execute(plugin, runnable);
 		} else {
 			plugin.getServer().getScheduler().runTaskAsynchronously(plugin, runnable);

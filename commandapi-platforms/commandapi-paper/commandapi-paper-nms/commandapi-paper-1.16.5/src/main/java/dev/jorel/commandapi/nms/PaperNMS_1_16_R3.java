@@ -5,6 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPIPaper;
+import dev.jorel.commandapi.CommandRegistrationStrategy;
+import dev.jorel.commandapi.SpigotCommandRegistration;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -15,6 +17,8 @@ import net.minecraft.server.v1_16_R3.CommandListenerWrapper;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.MinecraftServer;
 import org.bukkit.command.Command;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.v1_16_R3.command.BukkitCommandWrapper;
 import org.bukkit.craftbukkit.v1_16_R3.command.VanillaCommandWrapper;
 
 public class PaperNMS_1_16_R3 extends CommandAPIPaper<CommandListenerWrapper> {
@@ -41,8 +45,15 @@ public class PaperNMS_1_16_R3 extends CommandAPIPaper<CommandListenerWrapper> {
 	}
 
 	@Override
-	public Command wrapToVanillaCommandWrapper(CommandNode<CommandListenerWrapper> node) {
-		return new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommandDispatcher(), node);
+	public CommandRegistrationStrategy<CommandListenerWrapper> createCommandRegistrationStrategy() {
+		return new SpigotCommandRegistration<>(
+			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.a(),
+			(SimpleCommandMap) getCommandMap(),
+			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommandDispatcher().a(),
+			command -> command instanceof VanillaCommandWrapper,
+			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> node.getCommand() instanceof BukkitCommandWrapper
+		);
 	}
 
 }

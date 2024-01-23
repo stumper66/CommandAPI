@@ -10,12 +10,20 @@ import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.arguments.SuggestionProviders;
-import dev.jorel.commandapi.commandsenders.AbstractCommandSender;
-import dev.jorel.commandapi.commandsenders.AbstractPlayer;
+import dev.jorel.commandapi.commandsenders.*;
 import dev.jorel.commandapi.nms.SpigotNMS;
 import dev.jorel.commandapi.preprocessor.Unimplemented;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
+import org.bukkit.Bukkit;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +32,7 @@ import java.util.List;
 
 import static dev.jorel.commandapi.preprocessor.Unimplemented.REASON.REQUIRES_CRAFTBUKKIT;
 
-public abstract class CommandAPISpigot<Source> extends CommandAPIPlatform<Argument<?>, CommandSender, Source> implements SpigotNMS<Source> {
+public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>, SpigotNMS<Source> {
 
 	private static CommandAPIBukkit<?> bukkit;
 	private static CommandAPISpigot<?> spigot;
@@ -32,6 +40,8 @@ public abstract class CommandAPISpigot<Source> extends CommandAPIPlatform<Argume
 	protected CommandAPISpigot() {
 		CommandAPISpigot.bukkit = (CommandAPIBukkit<Source>) bukkitNMS();
 		CommandAPISpigot.spigot = this;
+
+		bukkit.setInstance(this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -55,12 +65,37 @@ public abstract class CommandAPISpigot<Source> extends CommandAPIPlatform<Argume
 
 	@Override
 	public void onEnable() {
-		bukkit.onEnable();
+		JavaPlugin plugin = getConfiguration().getPlugin();
+
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+			// Sort out permissions after the server has finished registering them all
+			bukkit.getCommandRegistrationStrategy().runTasksAfterServerStart();
+			if (!getConfiguration().skipReloadDatapacks()) {
+				reloadDataPacks();
+			}
+			bukkit.updateHelpForCommands(CommandAPI.getRegisteredCommands());
+		}, 0L);
+
+		// Prevent command registration after server has loaded
+		Bukkit.getServer().getPluginManager().registerEvents(new Listener() {
+			// We want the lowest priority so that we always get to this first, in case a dependent plugin is using
+			//  CommandAPI features in their own ServerLoadEvent listener for some reason
+			@EventHandler(priority = EventPriority.LOWEST)
+			public void onServerLoad(ServerLoadEvent event) {
+				CommandAPI.stopCommandRegistration();
+			}
+		}, getConfiguration().getPlugin());
+
 	}
 
 	@Override
 	public void onDisable() {
 		bukkit.onDisable();
+	}
+
+	@Override
+	public CommandMap getCommandMap() {
+		return bukkit.getSimpleCommandMap();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -81,8 +116,29 @@ public abstract class CommandAPISpigot<Source> extends CommandAPIPlatform<Argume
 	}
 
 	@Override
-	public AbstractCommandSender<? extends CommandSender> wrapCommandSender(CommandSender commandSender) {
-		return bukkit.wrapCommandSender(commandSender);
+	public BukkitCommandSender<? extends CommandSender> wrapCommandSender(CommandSender sender) {
+		if (sender instanceof BlockCommandSender block) {
+			return new BukkitBlockCommandSender(block);
+		}
+		if (sender instanceof ConsoleCommandSender console) {
+			return new BukkitConsoleCommandSender(console);
+		}
+		if (sender instanceof Player player) {
+			return new BukkitPlayer(player);
+		}
+		if (sender instanceof org.bukkit.entity.Entity entity) {
+			return new BukkitEntity(entity);
+		}
+		if (sender instanceof NativeProxyCommandSender nativeProxy) {
+			return new BukkitNativeProxyCommandSender(nativeProxy);
+		}
+		if (sender instanceof ProxiedCommandSender proxy) {
+			return new BukkitProxiedCommandSender(proxy);
+		}
+		if (sender instanceof RemoteConsoleCommandSender remote) {
+			return new BukkitRemoteConsoleCommandSender(remote);
+		}
+		throw new RuntimeException("Failed to wrap CommandSender " + sender + " to a CommandAPI-compatible BukkitCommandSender");
 	}
 
 	@Override
@@ -159,7 +215,4 @@ public abstract class CommandAPISpigot<Source> extends CommandAPIPlatform<Argume
 		return (LiteralArgument) bukkit.newConcreteLiteralArgument(nodeName, literal);
 	}
 
-	@Override
-	@Unimplemented(because = REQUIRES_CRAFTBUKKIT, classNamed = "VanillaCommandWrapper")
-	public abstract Command wrapToVanillaCommandWrapper(CommandNode<Source> node);
 }

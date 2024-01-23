@@ -20,22 +20,20 @@
  *******************************************************************************/
 package dev.jorel.commandapi.arguments;
 
-import java.io.Serializable;
-
-import org.bukkit.command.CommandSender;
-
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-
 import dev.jorel.commandapi.BukkitTooltip;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPIHandler;
 import dev.jorel.commandapi.executors.CommandArguments;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.command.CommandSender;
+
+import java.io.Serializable;
 
 /**
  * An argument that represents any custom object
@@ -221,7 +219,6 @@ public class CustomArgument<T, B> extends Argument<T> {
 	public static class CustomArgumentException extends Exception {
 
 		private BaseComponent[] errorBaseComponent = null;
-		private Component errorComponent = null;
 		private String errorMessage = null;
 		private MessageBuilder errorMessageBuilder = null;
 		
@@ -232,7 +229,7 @@ public class CustomArgument<T, B> extends Argument<T> {
 
 		/**
 		 * Constructs a CustomArgumentException with a given error message
-		 * 
+		 *
 		 * @param errorMessage the error message to display to the user when this
 		 *                     exception is thrown
 		 * @deprecated Use {@link CustomArgumentException#fromBaseComponents(BaseComponent...)} instead
@@ -268,7 +265,7 @@ public class CustomArgument<T, B> extends Argument<T> {
 
 		/**
 		 * Constructs a CustomArgumentException with a given error message
-		 * 
+		 *
 		 * @param errorMessage the error message to display to the user when this
 		 *                     exception is thrown
 		 */
@@ -287,18 +284,6 @@ public class CustomArgument<T, B> extends Argument<T> {
 		public static CustomArgumentException fromString(String errorMessage) {
 			CustomArgumentException exception = new CustomArgumentException();
 			exception.errorMessage = errorMessage;
-			return exception;
-		}
-
-		/**
-		 * Constructs a CustomArgumentException with a given error message
-		 * 
-		 * @param errorMessage the error message to display to the user when this
-		 *                     exception is thrown
-		 */
-		public static CustomArgumentException fromAdventureComponent(Component errorMessage) {
-			CustomArgumentException exception = new CustomArgumentException();
-			exception.errorComponent = errorMessage;
 			return exception;
 		}
 
@@ -329,12 +314,6 @@ public class CustomArgument<T, B> extends Argument<T> {
 				return new SimpleCommandExceptionType(brigadierMessage).create();
 			}
 
-			if (errorComponent != null) {
-				// Deal with Adventure Component
-				Message brigadierMessage = BukkitTooltip.messageFromAdventureComponent(errorComponent);
-				return new SimpleCommandExceptionType(brigadierMessage).create();
-			}
-
 			if (errorMessageBuilder != null) {
 				// Deal with MessageBuilder
 				String errorMsg = errorMessageBuilder.toString().replace(INPUT, result).replace(FULL_INPUT,
@@ -344,7 +323,8 @@ public class CustomArgument<T, B> extends Argument<T> {
 
 			if (errorMessage != null) {
 				// Deal with String
-				return CommandAPIBukkit.get().getPaper().getExceptionFromString(errorMessage).getException();
+				BaseComponent[] component = TextComponent.fromLegacyText(errorMessage);
+				return new SimpleCommandExceptionType(BukkitTooltip.messageFromBaseComponents(component)).create();
 			}
 
 			throw new IllegalStateException("No error component, error message creator or error message specified");

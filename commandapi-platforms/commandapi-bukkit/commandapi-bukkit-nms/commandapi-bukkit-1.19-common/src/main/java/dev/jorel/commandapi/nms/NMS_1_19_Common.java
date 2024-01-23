@@ -853,17 +853,4 @@ public abstract class NMS_1_19_Common extends NMS_CommonWithFunctions {
 			return null;
 		}
 	}
-
-	@Override
-	@Differs(from = "1.18", by = "MinecraftServer#aA -> MinecraftServer#aC")
-	public CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy() {
-		return new SpigotCommandRegistration<>(
-			this.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
-			(SimpleCommandMap) getPaper().getCommandMap(),
-			() -> this.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
-			command -> command instanceof VanillaCommandWrapper,
-			node -> new VanillaCommandWrapper(this.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
-			node -> node.getCommand() instanceof BukkitCommandWrapper
-		);
-	}
 }

@@ -31,9 +31,4 @@ public class SpigotNMS_1_17 extends SpigotNMS_1_17_Common {
 		return new NMS_1_17();
 	}
 
-	@Override
-	public Command wrapToVanillaCommandWrapper(CommandNode<CommandSourceStack> node) {
-		return new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node);
-	}
-
 }
