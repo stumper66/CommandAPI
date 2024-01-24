@@ -44,13 +44,12 @@ public class CommandAPIMain extends JavaPlugin {
 		// Read config file
 		saveDefaultConfig();
 		FileConfiguration fileConfig = getConfig();
-		CommandAPIBukkitConfig config = new CommandAPIBukkitConfig(this)
+		CommandAPISpigotConfig config = new CommandAPISpigotConfig(this)
 			.verboseOutput(fileConfig.getBoolean("verbose-outputs"))
 			.silentLogs(fileConfig.getBoolean("silent-logs"))
 			.useLatestNMSVersion(fileConfig.getBoolean("use-latest-nms-version"))
 			.missingExecutorImplementationMessage(fileConfig.getString("messages.missing-executor-implementation"))
 			.dispatcherFile(fileConfig.getBoolean("create-dispatcher-json") ? new File(getDataFolder(), "command_registration.json") : null)
-			.shouldHookPaperReload(fileConfig.getBoolean("hook-paper-reload"))
 			.skipReloadDatapacks(fileConfig.getBoolean("skip-initial-datapack-reload"));
 
 		for (String pluginName : fileConfig.getStringList("skip-sender-proxy")) {

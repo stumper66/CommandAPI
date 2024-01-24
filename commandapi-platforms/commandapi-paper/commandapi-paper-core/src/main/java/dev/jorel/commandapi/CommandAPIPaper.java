@@ -6,11 +6,20 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.arguments.SuggestionProviders;
-import dev.jorel.commandapi.commandsenders.*;
+import dev.jorel.commandapi.commandsenders.AbstractCommandSender;
+import dev.jorel.commandapi.commandsenders.AbstractPlayer;
+import dev.jorel.commandapi.commandsenders.BukkitBlockCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitConsoleCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitEntity;
+import dev.jorel.commandapi.commandsenders.BukkitFeedbackForwardingCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitNativeProxyCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitPlayer;
+import dev.jorel.commandapi.commandsenders.BukkitProxiedCommandSender;
+import dev.jorel.commandapi.commandsenders.BukkitRemoteConsoleCommandSender;
 import dev.jorel.commandapi.nms.PaperNMS;
 import dev.jorel.commandapi.preprocessor.Unimplemented;
 import org.bukkit.command.Command;
@@ -18,7 +27,12 @@ import org.bukkit.command.CommandSender;
 import dev.jorel.commandapi.wrappers.NativeProxyCommandSender;
 import io.papermc.paper.event.server.ServerResourcesReloadedEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.ProxiedCommandSender;
+import org.bukkit.command.RemoteConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static dev.jorel.commandapi.preprocessor.Unimplemented.REASON.REQUIRES_CRAFTBUKKIT;
 
@@ -69,13 +82,23 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		return (CommandAPIPaper<Source>) paper;
 	}
 
-	public static InternalBukkitConfig getConfiguration() {
-		return CommandAPIBukkit.getConfiguration();
+	public static InternalPaperConfig getConfiguration() {
+		return (InternalPaperConfig) CommandAPIBukkit.getConfiguration();
+	}
+
+	private static void setInternalConfig(InternalPaperConfig config) {
+		CommandAPIBukkit.config = config;
 	}
 
 	@Override
-	public void onLoad(CommandAPIConfig<?> config) {
-		bukkit.onLoad(config);
+	public <T extends CommandAPIBukkitConfig<T>> void onLoad(CommandAPIBukkitConfig<T> config) {
+		if (config instanceof CommandAPIPaperConfig paperConfig) {
+			CommandAPIPaper.setInternalConfig(new InternalPaperConfig(paperConfig));
+		} else {
+			CommandAPI.logError("CommandAPIBukkit was loaded with non-Bukkit config!");
+			CommandAPI.logError("Attempts to access Bukkit-specific config variables will fail!");
+		}
+		bukkit.onLoad();
 		checkPaperDependencies();
 	}
 
@@ -118,7 +141,7 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 					// online players. If, however, datapacks aren't supposed to be reloaded upon /minecraft:reload
 					// we have to do this manually here. This won't have any effect on Spigot and Paper version prior to
 					// paper-1.20.6-65
-					if (!CommandAPIBukkit.getConfiguration().shouldHookPaperReload()) {
+					if (!CommandAPIPaper.getConfiguration().shouldHookPaperReload()) {
 						for (Player player : Bukkit.getOnlinePlayers()) {
 							player.updateCommands();
 						}

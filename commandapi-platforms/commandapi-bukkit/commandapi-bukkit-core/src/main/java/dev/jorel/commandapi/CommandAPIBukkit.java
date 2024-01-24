@@ -71,7 +71,7 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 	// References to utility classes
 	private static BukkitPlatform<?> instance;
 	private static CommandAPIBukkit<?> bukkit;
-	private static InternalBukkitConfig config;
+	protected static InternalBukkitConfig config;
 	private CommandRegistrationStrategy<Source> commandRegistrationStrategy;
 
 	protected CommandAPIBukkit() {
@@ -109,19 +109,8 @@ public abstract class CommandAPIBukkit<Source> implements NMS<Source> {
 		return commandRegistrationStrategy;
 	}
 
-	public void onLoad(CommandAPIConfig<?> config) {
-		if(config instanceof CommandAPIBukkitConfig bukkitConfig) {
-			CommandAPIBukkit.setInternalConfig(new InternalBukkitConfig(bukkitConfig));
-		} else {
-			CommandAPI.logError("CommandAPIBukkit was loaded with non-Bukkit config!");
-			CommandAPI.logError("Attempts to access Bukkit-specific config variables will fail!");
-		}
-
+	public void onLoad() {
 		checkDependencies();
-	}
-
-	private static void setInternalConfig(InternalBukkitConfig internalBukkitConfig) {
-		CommandAPIBukkit.config = internalBukkitConfig;
 	}
 
 	private void checkDependencies() {
