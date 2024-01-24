@@ -66,8 +66,7 @@
 		<module>commandapi-kotlin</module>
 
 		<!-- Outputs -->
-		<!-- TODO: annotations has to become a platform specific module because of component related arguments
-		<module>commandapi-annotations</module> -->
+		<module>commandapi-annotations</module>
 
 		<!-- Documentation code -->
 		<!-- TODO:Component related arguments Documentation code

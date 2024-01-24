@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+        <module>commandapi-spigot-annotations</module>
 		<module>commandapi-spigot-core</module>
 		<module>commandapi-spigot-nms</module>
         <module>commandapi-spigot-vh</module>

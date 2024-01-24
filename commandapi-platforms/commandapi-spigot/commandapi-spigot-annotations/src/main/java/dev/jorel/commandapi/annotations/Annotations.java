@@ -20,34 +20,10 @@
  *******************************************************************************/
 package dev.jorel.commandapi.annotations;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ExecutableType;
-import javax.tools.Diagnostic.Kind;
-import javax.tools.JavaFileObject;
-
 import com.google.auto.service.AutoService;
-
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.CommandPermission;
 import dev.jorel.commandapi.annotations.arguments.AAdvancementArgument;
-import dev.jorel.commandapi.annotations.arguments.AAdventureChatArgument;
-import dev.jorel.commandapi.annotations.arguments.AAdventureChatComponentArgument;
 import dev.jorel.commandapi.annotations.arguments.AAngleArgument;
 import dev.jorel.commandapi.annotations.arguments.AAxisArgument;
 import dev.jorel.commandapi.annotations.arguments.ABiomeArgument;
@@ -99,19 +75,43 @@ import dev.jorel.commandapi.annotations.arguments.Primitive;
 import dev.jorel.commandapi.arguments.LocationType;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.ExecutableType;
+import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * The main annotation processor for annotation-based arguments
  */
 @AutoService(Processor.class)
 public class Annotations extends AbstractProcessor {
 
-	private static final Class<?>[] ARGUMENT_ANNOTATIONS = new Class<?>[] { AAdvancementArgument.class,
-		AAdventureChatArgument.class, AAdventureChatComponentArgument.class, AAngleArgument.class,
-		AAxisArgument.class, ABiomeArgument.class, ABlockPredicateArgument.class, ABlockStateArgument.class,
-		ABooleanArgument.class, AChatArgument.class, AChatColorArgument.class, AChatComponentArgument.class,
-		ADoubleArgument.class, AEnchantmentArgument.class, AEntitySelectorArgument.ManyEntities.class,
-		AEntitySelectorArgument.ManyPlayers.class, AEntitySelectorArgument.OneEntity.class,
-		AEntitySelectorArgument.OnePlayer.class, AEntityTypeArgument.class,
+	private static final Class<?>[] ARGUMENT_ANNOTATIONS = new Class[] { AAdvancementArgument.class,
+		AAngleArgument.class, AAxisArgument.class, ABiomeArgument.class, ABlockPredicateArgument.class,
+		ABlockStateArgument.class, ABooleanArgument.class, AChatArgument.class,
+		AChatColorArgument.class, AChatComponentArgument.class, ADoubleArgument.class,
+		AEnchantmentArgument.class, AEntitySelectorArgument.ManyEntities.class, AEntitySelectorArgument.ManyPlayers.class,
+		AEntitySelectorArgument.OneEntity.class, AEntitySelectorArgument.OnePlayer.class, AEntityTypeArgument.class,
 		AFloatArgument.class, AFloatRangeArgument.class, AFunctionArgument.class,
 		AGreedyStringArgument.class, AIntegerArgument.class, AIntegerRangeArgument.class, AItemStackArgument.class,
 		AItemStackPredicateArgument.class, ALiteralArgument.class, ALocation2DArgument.class,
@@ -120,7 +120,7 @@ public class Annotations extends AbstractProcessor {
 		AObjectiveCriteriaArgument.class, AOfflinePlayerArgument.class, AParticleArgument.class, APlayerArgument.class,
 		APotionEffectArgument.class, ARecipeArgument.class, ARotationArgument.class, AScoreboardSlotArgument.class,
 		AScoreHolderArgument.Single.class, AScoreHolderArgument.Multiple.class, ASoundArgument.class, AStringArgument.class, ATeamArgument.class,
-		ATextArgument.class, ATimeArgument.class, AUUIDArgument.class, AWorldArgument.class};
+		ATextArgument.class, ATimeArgument.class, AUUIDArgument.class, AWorldArgument.class };
 
 	// List of stuff we can deal with
 	@Override

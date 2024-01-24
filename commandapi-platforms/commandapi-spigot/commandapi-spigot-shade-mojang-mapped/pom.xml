@@ -31,7 +31,7 @@
 		</dependency>
 		<dependency>
 			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-bukkit-mojang-mapped</artifactId>
+			<artifactId>commandapi-spigot-mojang-mapped</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

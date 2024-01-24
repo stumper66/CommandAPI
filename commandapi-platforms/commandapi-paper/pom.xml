@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+        <module>commandapi-paper-annotations</module>
 		<module>commandapi-paper-core</module>
         <module>commandapi-paper-vh</module>
 		<module>commandapi-paper-mojang-mapped</module>
@@ -21,6 +22,6 @@
 		<module>commandapi-paper-plugin</module>
 		<module>commandapi-paper-plugin-mojang-mapped</module>
 		<module>commandapi-paper-shade-mojang-mapped</module>
-	</modules>
+    </modules>
 
 </project>
