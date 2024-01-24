@@ -6,7 +6,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import dev.jorel.commandapi.arguments.Argument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 import dev.jorel.commandapi.arguments.MultiLiteralArgument;
 import dev.jorel.commandapi.arguments.SuggestionProviders;
@@ -100,7 +99,7 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 
 	@Override
 	public Platform activePlatform() {
-		return Platform.BUKKIT;
+		return Platform.SPIGOT;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -7,7 +7,7 @@ public enum Platform {
 	/**
 	 * Represents the Bukkit platform, uses module commandapi-spigot
 	 */
-	BUKKIT,
+	SPIGOT,
 
 	/**
 	 * Represents the Paper platform, uses module commandapi-paper
