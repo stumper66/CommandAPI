@@ -98,6 +98,11 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		return bukkit.getSimpleCommandMap();
 	}
 
+	@Override
+	public Platform activePlatform() {
+		return Platform.BUKKIT;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractCommandSender<? extends CommandSender> getSenderForCommand(CommandContext<Source> cmdCtx, boolean forceNative) {
