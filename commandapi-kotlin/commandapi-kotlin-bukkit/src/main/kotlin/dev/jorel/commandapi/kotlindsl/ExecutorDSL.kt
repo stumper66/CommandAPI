@@ -5,6 +5,7 @@ import dev.jorel.commandapi.commandsenders.BukkitBlockCommandSender
 import dev.jorel.commandapi.commandsenders.BukkitCommandSender
 import dev.jorel.commandapi.commandsenders.BukkitConsoleCommandSender
 import dev.jorel.commandapi.commandsenders.BukkitEntity
+import dev.jorel.commandapi.commandsenders.BukkitFeedbackForwardingCommandSender
 import dev.jorel.commandapi.commandsenders.BukkitNativeProxyCommandSender
 import dev.jorel.commandapi.commandsenders.BukkitPlayer
 import dev.jorel.commandapi.commandsenders.BukkitRemoteConsoleCommandSender
@@ -24,6 +25,10 @@ import dev.jorel.commandapi.executors.EntityExecutionInfo
 import dev.jorel.commandapi.executors.EntityResultingCommandExecutor
 import dev.jorel.commandapi.executors.EntityResultingExecutionInfo
 import dev.jorel.commandapi.executors.ExecutionInfo
+import dev.jorel.commandapi.executors.FeedbackForwardingCommandExecutor
+import dev.jorel.commandapi.executors.FeedbackForwardingExecutionInfo
+import dev.jorel.commandapi.executors.FeedbackForwardingResultingCommandExecutor
+import dev.jorel.commandapi.executors.FeedbackForwardingResultingExecutionInfo
 import dev.jorel.commandapi.executors.NativeCommandExecutor
 import dev.jorel.commandapi.executors.NativeExecutionInfo
 import dev.jorel.commandapi.executors.NativeResultingCommandExecutor
