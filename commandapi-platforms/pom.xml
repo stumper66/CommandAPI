@@ -25,8 +25,9 @@
         		<module>commandapi-spigot</module>
 				<module>../commandapi-kotlin/commandapi-kotlin-core</module>
 				<module>../commandapi-kotlin/commandapi-kotlin-bukkit</module>
-				<module>../commandapi-kotlin/commandapi-kotlin-paper</module>
-				<module>../commandapi-kotlin/commandapi-kotlin-spigot</module>
+				<!-- TODO: Definitely find a solution for this problem, for now we just disable this -->
+				<!--<module>../commandapi-kotlin/commandapi-kotlin-paper</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-spigot</module>-->
 			</modules>
 		</profile>
 		<profile>
