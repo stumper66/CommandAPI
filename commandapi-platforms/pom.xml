@@ -12,22 +12,19 @@
 
 	<artifactId>commandapi-platforms</artifactId>
 	<packaging>pom</packaging>
-    <modules>
-    </modules>
 
-    <profiles>
+	<profiles>
 		<!-- Choose which platforms get built -->
 		<profile>
 			<id>Platform.Bukkit</id>
 			<modules>
 				<module>commandapi-bukkit</module>
 				<module>commandapi-paper</module>
-        		<module>commandapi-spigot</module>
+				<module>commandapi-spigot</module>
 				<module>../commandapi-kotlin/commandapi-kotlin-core</module>
 				<module>../commandapi-kotlin/commandapi-kotlin-bukkit</module>
-				<!-- TODO: Definitely find a solution for this problem, for now we just disable this -->
-				<!--<module>../commandapi-kotlin/commandapi-kotlin-paper</module>
-				<module>../commandapi-kotlin/commandapi-kotlin-spigot</module>-->
+				<module>../commandapi-kotlin/commandapi-kotlin-paper</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-spigot</module>
 			</modules>
 		</profile>
 		<profile>

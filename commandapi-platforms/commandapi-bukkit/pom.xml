@@ -22,5 +22,6 @@
 
 		<!-- Tests do not compile at this time. This is a big todo
 		<module>commandapi-bukkit-test</module> -->
+		<!--<module>commandapi-bukkit-test</module>-->
 	</modules>
 </project>
