@@ -19,7 +19,7 @@ dependencies {
 	implementation(kotlin("stdlib-jdk8"))
 
 	// This adds the Spigot API artifact to the build
-	implementation("org.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+	implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
 
 	// The CommandAPI dependency used for Bukkit and it's forks
 	implementation("dev.jorel:commandapi-paper-core:9.6.0-SNAPSHOT")
