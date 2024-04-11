@@ -28,6 +28,26 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>Platform.Paper</id>
+			<modules>
+				<module>commandapi-bukkit</module>
+				<module>commandapi-paper</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-core</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-bukkit</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-paper</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>Platform.Spigot</id>
+			<modules>
+				<module>commandapi-bukkit</module>
+				<module>commandapi-spigot</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-core</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-bukkit</module>
+				<module>../commandapi-kotlin/commandapi-kotlin-spigot</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>Platform.Sponge</id>
 			<modules>
 				<module>commandapi-sponge</module>
