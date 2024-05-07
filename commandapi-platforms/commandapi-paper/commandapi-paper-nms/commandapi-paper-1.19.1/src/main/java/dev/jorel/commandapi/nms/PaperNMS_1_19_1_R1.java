@@ -1,5 +1,6 @@
 package dev.jorel.commandapi.nms;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import io.netty.channel.Channel;

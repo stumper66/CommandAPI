@@ -2,7 +2,6 @@ package dev.jorel.commandapi.nms;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.tree.CommandNode;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandRegistrationStrategy;
 import dev.jorel.commandapi.SpigotCommandRegistration;
@@ -13,7 +12,6 @@ import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.craftbukkit.v1_19_R3.command.BukkitCommandWrapper;
 import org.bukkit.craftbukkit.v1_19_R3.command.VanillaCommandWrapper;

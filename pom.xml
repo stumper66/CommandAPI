@@ -69,14 +69,14 @@
 		<module>commandapi-annotations</module>
 
 		<!-- General and platform documentation -->
+		<!-- Documentation needs work, does not build independently
 		<module>commandapi-documentation-code</module>
 		<module>commandapi-documentation-velocity-code</module>
 		<module>commandapi-platforms/commandapi-paper/commandapi-paper-documentation-code</module>
-		<module>commandapi-platforms/commandapi-spigot/commandapi-spigot-documentation-code</module>
+		<module>commandapi-platforms/commandapi-spigot/commandapi-spigot-documentation-code</module>-->
 
 		<!-- Code coverage reports -->
 		<module>commandapi-codecov</module>
-        <module>commandapi-test</module>
     </modules>
 
 	<properties>

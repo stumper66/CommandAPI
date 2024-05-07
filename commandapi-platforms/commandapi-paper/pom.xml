@@ -22,6 +22,9 @@
 		<module>commandapi-paper-plugin</module>
 		<module>commandapi-paper-plugin-mojang-mapped</module>
 		<module>commandapi-paper-shade-mojang-mapped</module>
+
+		<!-- Tests do not compile
+		<module>../../commandapi-test/commandapi-test-paper</module> -->
     </modules>
 
 </project>
