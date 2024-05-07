@@ -76,7 +76,8 @@
 
 		<!-- Code coverage reports -->
 		<module>commandapi-codecov</module>
-	</modules>
+        <module>commandapi-test</module>
+    </modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
