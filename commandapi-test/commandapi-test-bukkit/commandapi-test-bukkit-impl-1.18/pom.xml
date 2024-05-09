@@ -90,16 +90,6 @@
 			<version>1.0.17</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-test-bukkit-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-paper-shade</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Version-specific dependencies -->
 		<dependency>
@@ -118,6 +108,18 @@
 			<version>${spigot.version}</version>
 			<classifier>remapped-mojang</classifier>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- CommandAPI stuff -->
+		<dependency>
+			<groupId>dev.jorel</groupId>
+			<artifactId>commandapi-test-bukkit-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.jorel</groupId>
+			<artifactId>commandapi-paper-shade</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
