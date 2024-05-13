@@ -90,16 +90,6 @@
 			<version>1.2.9</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-test-bukkit-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-paper-shade</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Version-specific dependencies -->
 		<dependency>
@@ -119,6 +109,18 @@
 			<artifactId>paper-api</artifactId>
 			<version>${paper.version}</version>
 		</dependency> -->
+
+		<!-- CommandAPI stuff -->
+		<dependency>
+			<groupId>dev.jorel</groupId>
+			<artifactId>commandapi-test-bukkit-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>dev.jorel</groupId>
+			<artifactId>commandapi-paper-shade</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

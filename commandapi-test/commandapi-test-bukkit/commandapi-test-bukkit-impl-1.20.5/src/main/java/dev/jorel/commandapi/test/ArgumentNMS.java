@@ -368,22 +368,6 @@ public abstract class ArgumentNMS extends MockPlatform<CommandSourceStack> {
 	}
 
 	@Override
-	public Component getAdventureChat(CommandContext cmdCtx, String key)
-		throws CommandSyntaxException {
-		return baseNMS.getAdventureChat(cmdCtx, key);
-	}
-
-	@Override
-	public NamedTextColor getAdventureChatColor(CommandContext cmdCtx, String key) {
-		return baseNMS.getAdventureChatColor(cmdCtx, key);
-	}
-
-	@Override
-	public Component getAdventureChatComponent(CommandContext cmdCtx, String key) {
-		return baseNMS.getAdventureChatComponent(cmdCtx, key);
-	}
-
-	@Override
 	public float getAngle(CommandContext cmdCtx, String key) {
 		return baseNMS.getAngle(cmdCtx, key);
 	}
@@ -407,21 +391,6 @@ public abstract class ArgumentNMS extends MockPlatform<CommandSourceStack> {
 	@Override
 	public BlockData getBlockState(CommandContext cmdCtx, String key) {
 		return baseNMS.getBlockState(cmdCtx, key);
-	}
-
-	@Override
-	public BaseComponent[] getChat(CommandContext cmdCtx, String key) throws CommandSyntaxException {
-		return baseNMS.getChat(cmdCtx, key);
-	}
-
-	@Override
-	public ChatColor getChatColor(CommandContext cmdCtx, String key) {
-		return baseNMS.getChatColor(cmdCtx, key);
-	}
-
-	@Override
-	public BaseComponent[] getChatComponent(CommandContext cmdCtx, String key) {
-		return baseNMS.getChatComponent(cmdCtx, key);
 	}
 
 	@Override

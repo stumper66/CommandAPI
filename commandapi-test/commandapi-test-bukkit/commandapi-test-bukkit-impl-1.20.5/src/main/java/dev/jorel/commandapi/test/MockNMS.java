@@ -3,48 +3,46 @@ package dev.jorel.commandapi.test;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.help.HelpMapMock;
 import com.google.gson.JsonParseException;
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
-import dev.jorel.commandapi.*;
+import dev.jorel.commandapi.Brigadier;
+import dev.jorel.commandapi.CommandAPIBukkit;
+import dev.jorel.commandapi.SafeVarHandle;
 import dev.jorel.commandapi.commandsenders.AbstractCommandSender;
 import dev.jorel.commandapi.commandsenders.BukkitCommandSender;
 import dev.jorel.commandapi.commandsenders.BukkitPlayer;
+import dev.jorel.commandapi.test.exception.UnimplementedMethodException;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.commands.functions.CommandFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.numbers.BlankFormat;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.*;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.server.players.PlayerList;
-import net.minecraft.util.profiling.metrics.profiling.InactiveMetricsRecorder;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.world.scores.criteria.ObjectiveCriteria;
-import net.minecraft.world.scores.criteria.ObjectiveCriteria.RenderType;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
@@ -65,11 +63,23 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 import java.security.CodeSource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
+import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 
 public class MockNMS extends Enums {
 	private static final SafeVarHandle<HelpMapMock, Map<String, HelpTopic>> helpMapTopics =
@@ -532,158 +542,7 @@ public class MockNMS extends Enums {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getMinecraftServer() {
-		if (minecraftServerMock != null) {
-			return (T) minecraftServerMock;
-		}
-		minecraftServerMock = Mockito.mock(MinecraftServer.class);
-
-		// LootTableArgument
-//		Mockito.when(minecraftServerMock.getLootData()).thenAnswer(invocation -> {
-//			//.getKeys(LootDataType.TABLE)
-//			LootDataManager lootDataManager = Mockito.mock(LootDataManager.class);
-//			
-//			Mockito.when(lootDataManager.getLootTable(any(ResourceLocation.class))).thenAnswer(i -> {
-//				if (BuiltInLootTables.all().contains(i.getArgument(0))) {
-//					return net.minecraft.world.level.storage.loot.LootTable.EMPTY;
-//				} else {
-//					return null;
-//				}
-//			});
-//			
-//			Mockito.when(lootDataManager.getKeys(any())).thenAnswer(i -> {
-//				return Streams
-//					.concat(
-//						Arrays.stream(getEntityTypes())
-//							.filter(e -> !e.equals(EntityType.UNKNOWN))
-//							// TODO? These entity types don't have corresponding
-//							// loot table entries! Did Spigot miss them out?
-//							.filter(e -> !e.equals(EntityType.ALLAY))
-//							.filter(e -> !e.equals(EntityType.FROG))
-//							.filter(e -> !e.equals(EntityType.TADPOLE))
-//							.filter(e -> !e.equals(EntityType.WARDEN))
-//							.filter(e -> e.isAlive())
-//							.map(EntityType::getKey)
-//							.map(k -> new ResourceLocation("minecraft", "entities/" + k.getKey())),
-//						BuiltInLootTables.all().stream())
-//					.collect(Collectors.toSet());
-//			});
-//			return lootDataManager;
-//		});
-
-		// AdvancementArgument
-		Mockito.when(minecraftServerMock.getAdvancements()).thenAnswer(i -> advancementDataWorld);
-
-		// TeamArgument
-		ServerScoreboard scoreboardServerMock = Mockito.mock(ServerScoreboard.class);
-		Mockito.when(scoreboardServerMock.getPlayerTeam(anyString())).thenAnswer(invocation -> { // Scoreboard#getPlayerTeam
-			String teamName = invocation.getArgument(0);
-			Team team = Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamName);
-			if (team == null) {
-				return null;
-			} else {
-				return new PlayerTeam(scoreboardServerMock, teamName);
-			}
-		});
-		Mockito.when(scoreboardServerMock.getObjective(anyString())).thenAnswer(invocation -> { // Scoreboard#getObjective
-			String objectiveName = invocation.getArgument(0);
-			org.bukkit.scoreboard.Objective bukkitObjective = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(objectiveName);
-			if (bukkitObjective == null) {
-				return null;
-			} else {
-				return new Objective(scoreboardServerMock, objectiveName, ObjectiveCriteria.byName(bukkitObjective.getCriteria()).get(), Component.literal(bukkitObjective.getDisplayName()), switch(bukkitObjective.getRenderType()) {
-					case HEARTS:
-						yield RenderType.HEARTS;
-					case INTEGER:
-						yield RenderType.INTEGER;
-				}, true /* displayAutoUpdate */, BlankFormat.INSTANCE /* numberFormat */);
-			}
-		});
-		Mockito.when(minecraftServerMock.getScoreboard()).thenReturn(scoreboardServerMock); // MinecraftServer#getScoreboard
-
-		// WorldArgument (Dimension)
-		Mockito.when(minecraftServerMock.getLevel(any(ResourceKey.class))).thenAnswer(invocation -> {
-			// Get the ResourceKey<World> and extract the world name from it
-			ResourceKey<Level> resourceKey = invocation.getArgument(0);
-			String worldName = resourceKey.location().getPath();
-
-			// Get the world via Bukkit (returns a WorldMock) and create a
-			// CraftWorld clone of it for WorldServer.getWorld()
-			World world = Bukkit.getServer().getWorld(worldName);
-			if (world == null) {
-				return null;
-			} else {
-				CraftWorld craftWorldMock = Mockito.mock(CraftWorld.class);
-				Mockito.when(craftWorldMock.getName()).thenReturn(world.getName());
-				Mockito.when(craftWorldMock.getUID()).thenReturn(world.getUID());
-
-				// Create our return WorldServer object
-				ServerLevel bukkitWorldServerMock = Mockito.mock(ServerLevel.class);
-				Mockito.when(bukkitWorldServerMock.getWorld()).thenReturn(craftWorldMock);
-				return bukkitWorldServerMock;
-			}
-		});
-
-		// Player lists
-		Mockito.when(minecraftServerMock.getPlayerList()).thenAnswer(i -> playerListMock);
-		Mockito.when(minecraftServerMock.getPlayerList().getPlayers()).thenAnswer(i -> players);
-
-		// PlayerArgument
-		GameProfileCache userCacheMock = Mockito.mock(GameProfileCache.class);
-		Mockito.when(userCacheMock.get(anyString())).thenAnswer(invocation -> {
-			String playerName = invocation.getArgument(0);
-			for (ServerPlayer onlinePlayer : players) {
-				if (onlinePlayer.getBukkitEntity().getName().equals(playerName)) {
-					return Optional.of(new GameProfile(onlinePlayer.getBukkitEntity().getUniqueId(), playerName));
-				}
-			}
-			return Optional.empty();
-		});
-		Mockito.when(minecraftServerMock.getProfileCache()).thenReturn(userCacheMock);
-
-		// RecipeArgument
-		Mockito.when(minecraftServerMock.getRecipeManager()).thenAnswer(i -> this.recipeManager);
-
-		// FunctionArgument
-		// We're using 2 as the function compilation level.
-		Mockito.when(minecraftServerMock.getFunctionCompilationLevel()).thenReturn(2);
-		Mockito.when(minecraftServerMock.getFunctions()).thenAnswer(i -> {
-			ServerFunctionLibrary serverFunctionLibrary = Mockito.mock(ServerFunctionLibrary.class);
-
-			// Functions
-			Mockito.when(serverFunctionLibrary.getFunction(any())).thenAnswer(invocation -> Optional.ofNullable(functions.get(invocation.getArgument(0))));
-			Mockito.when(serverFunctionLibrary.getFunctions()).thenAnswer(invocation -> functions);
-
-			// Tags
-			Mockito.when(serverFunctionLibrary.getTag(any())).thenAnswer(invocation -> tags.getOrDefault(invocation.getArgument(0), List.of()));
-			Mockito.when(serverFunctionLibrary.getAvailableTags()).thenAnswer(invocation -> tags.keySet());
-
-			return new ServerFunctionManager(minecraftServerMock, serverFunctionLibrary) {
-				
-				// Make sure we don't use ServerFunctionManager#getDispatcher!
-				// That method accesses MinecraftServer.vanillaCommandDispatcher
-				// directly (boo) and that causes all sorts of nonsense.
-				@Override
-				public CommandDispatcher<CommandSourceStack> getDispatcher() {
-					return Brigadier.getCommandDispatcher();
-				}
-			};
-		});
-		
-		Mockito.when(minecraftServerMock.getGameRules()).thenAnswer(i -> new GameRules());
-		Mockito.when(minecraftServerMock.getProfiler()).thenAnswer(i -> InactiveMetricsRecorder.INSTANCE.getProfiler());
-
-		// Brigadier and resources dispatcher, used in `NMS#createCommandRegistrationStrategy`
-		Commands brigadierCommands = new Commands();
-		MockPlatform.setField(brigadierCommands.getClass(), "h", "dispatcher",
-			brigadierCommands, getMockBrigadierDispatcher());
-		minecraftServerMock.vanillaCommandDispatcher = brigadierCommands;
-
-		Commands resourcesCommands = new Commands();
-		MockPlatform.setField(resourcesCommands.getClass(), "h", "dispatcher",
-			resourcesCommands, getMockResourcesDispatcher());
-		Mockito.when(minecraftServerMock.getCommands()).thenReturn(resourcesCommands);
-
-		return (T) minecraftServerMock;
+		throw new UnimplementedMethodException("This method should not be accessed here. Please use a platform-specific version of this method.");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1006,8 +865,4 @@ public class MockNMS extends Enums {
 		return helpMapTopics.get((HelpMapMock) Bukkit.getHelpMap());
 	}
 
-	@Override
-	public CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy() {
-		return baseNMS.createCommandRegistrationStrategy();
-	}
 }
