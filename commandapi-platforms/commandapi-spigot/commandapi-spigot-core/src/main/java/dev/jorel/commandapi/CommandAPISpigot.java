@@ -128,12 +128,12 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public AbstractCommandSender<? extends CommandSender> getSenderForCommand(CommandContext<Source> cmdCtx, boolean forceNative) {
+	public BukkitCommandSender<? extends CommandSender> getSenderForCommand(CommandContext<Source> cmdCtx, boolean forceNative) {
 		return getBukkit().getSenderForCommand((CommandContext<Object>) cmdCtx, forceNative);
 	}
 
 	@Override
-	public AbstractCommandSender<? extends CommandSender> getCommandSenderFromCommandSource(Source source) {
+	public BukkitCommandSender<? extends CommandSender> getCommandSenderFromCommandSource(Source source) {
 		return getBukkit().getCommandSenderFromCommandSource(source);
 	}
 

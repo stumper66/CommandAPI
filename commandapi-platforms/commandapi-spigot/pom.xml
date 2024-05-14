@@ -23,8 +23,8 @@
 		<module>commandapi-spigot-plugin-mojang-mapped</module>
 		<module>commandapi-spigot-shade-mojang-mapped</module>
 
-		<!-- Tests do not compile
-		<module>../../commandapi-test/commandapi-test-spigot</module> -->
+		<!-- Tests do not compile -->
+		<module>../../commandapi-test/commandapi-test-spigot</module>
     </modules>
 
 </project>
