@@ -14,8 +14,8 @@
 
 	<modules>
 		<module>commandapi-test-bukkit</module>
-		<module>commandapi-test-paper</module>
-		<module>commandapi-test-spigot</module>
+		<!-- <module>commandapi-test-paper</module>
+		<module>commandapi-test-spigot</module> -->
 	</modules>
 
 </project>
