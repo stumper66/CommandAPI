@@ -50,6 +50,7 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 	private static CommandAPIBukkit<?> bukkit;
 	private static CommandAPISpigot<?> spigot;
 
+	@SuppressWarnings("unchecked")
 	protected CommandAPISpigot() {
 		CommandAPISpigot.bukkit = (CommandAPIBukkit<Source>) bukkitNMS();
 		CommandAPISpigot.spigot = this;
@@ -126,10 +127,9 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		return Platform.SPIGOT;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BukkitCommandSender<? extends CommandSender> getSenderForCommand(CommandContext<Source> cmdCtx, boolean forceNative) {
-		return getBukkit().getSenderForCommand((CommandContext<Object>) cmdCtx, forceNative);
+		return CommandAPISpigot.<Source>getBukkit().getSenderForCommand(cmdCtx, forceNative);
 	}
 
 	@Override
@@ -137,10 +137,9 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		return getBukkit().getCommandSenderFromCommandSource(source);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Source getBrigadierSourceFromCommandSender(AbstractCommandSender<? extends CommandSender> sender) {
-		return (Source) bukkit.getBrigadierSourceFromCommandSender(sender);
+		return CommandAPISpigot.<Source>getBukkit().getBrigadierSourceFromCommandSender(sender);
 	}
 
 	@Override
@@ -174,10 +173,9 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		bukkit.registerPermission(string);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public SuggestionProvider<Source> getSuggestionProvider(SuggestionProviders suggestionProvider) {
-		return (SuggestionProvider<Source>) bukkit.getSuggestionProvider(suggestionProvider);
+		return CommandAPISpigot.<Source>getBukkit().getSuggestionProvider(suggestionProvider);
 	}
 
 	@Override
@@ -185,20 +183,14 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		bukkit.preCommandRegistration(commandName);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void postCommandRegistration(RegisteredCommand registeredCommand, LiteralCommandNode<Source> resultantNode, List<LiteralCommandNode<Source>> aliasNodes) {
-		List<LiteralCommandNode<Object>> aliases = new ArrayList<>();
-		for (LiteralCommandNode<?> commandNode : aliasNodes) {
-			aliases.add((LiteralCommandNode<Object>) commandNode);
-		}
-		getBukkit().postCommandRegistration(registeredCommand, (LiteralCommandNode<Object>) resultantNode, aliases);
+		CommandAPISpigot.<Source>getBukkit().postCommandRegistration(registeredCommand, resultantNode, aliasNodes);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public LiteralCommandNode<Source> registerCommandNode(LiteralArgumentBuilder<Source> node, String namespace) {
-		return (LiteralCommandNode<Source>) getBukkit().registerCommandNode((LiteralArgumentBuilder<Object>) node, namespace);
+		return CommandAPISpigot.<Source>getBukkit().registerCommandNode(node, namespace);
 	}
 
 	@Override
@@ -206,16 +198,14 @@ public abstract class CommandAPISpigot<Source> implements BukkitPlatform<Source>
 		bukkit.unregister(commandName, unregisterNamespaces);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public CommandDispatcher<Source> getBrigadierDispatcher() {
-		return (CommandDispatcher<Source>) bukkit.getBrigadierDispatcher();
+		return CommandAPISpigot.<Source>getBukkit().getBrigadierDispatcher();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void createDispatcherFile(File file, CommandDispatcher<Source> dispatcher) throws IOException {
-		getBukkit().createDispatcherFile(file, (CommandDispatcher<Object>) dispatcher);
+		CommandAPISpigot.<Source>getBukkit().createDispatcherFile(file, dispatcher);
 	}
 
 	@Override

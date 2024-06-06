@@ -153,7 +153,7 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 			}, plugin);
 			CommandAPI.logNormal("Hooked into Paper ServerResourcesReloadedEvent");
 		} else {
-			CommandAPI.logNormal("Did not hook into Paper ServerResourcesReloadedEvent as you do not seem to run a Paper server.");
+			CommandAPI.logNormal("Did not hook into Paper ServerResourcesReloadedEvent while using commandapi-paper. Are you actually using Paper?");
 		}
 	}
 
@@ -206,10 +206,9 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		return Platform.PAPER;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public BukkitCommandSender<? extends CommandSender> getSenderForCommand(CommandContext<Source> cmdCtx, boolean forceNative) {
-		return getBukkit().getSenderForCommand((CommandContext<Object>) cmdCtx, forceNative);
+		return CommandAPIPaper.<Source>getBukkit().getSenderForCommand(cmdCtx, forceNative);
 	}
 
 	@Override
@@ -217,10 +216,9 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		return getBukkit().getCommandSenderFromCommandSource(source);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Source getBrigadierSourceFromCommandSender(AbstractCommandSender<? extends CommandSender> sender) {
-		return (Source) bukkit.getBrigadierSourceFromCommandSender(sender);
+		return CommandAPIPaper.<Source>getBukkit().getBrigadierSourceFromCommandSender(sender);
 	}
 
 	@Override
@@ -259,10 +257,9 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		bukkit.registerPermission(string);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public SuggestionProvider<Source> getSuggestionProvider(SuggestionProviders suggestionProvider) {
-		return (SuggestionProvider<Source>) bukkit.getSuggestionProvider(suggestionProvider);
+		return CommandAPIPaper.<Source>getBukkit().getSuggestionProvider(suggestionProvider);
 	}
 
 	@Override
@@ -270,20 +267,14 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		bukkit.preCommandRegistration(commandName);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void postCommandRegistration(RegisteredCommand registeredCommand, LiteralCommandNode<Source> resultantNode, List<LiteralCommandNode<Source>> aliasNodes) {
-		List<LiteralCommandNode<Object>> aliases = new ArrayList<>();
-		for (LiteralCommandNode<?> commandNode : aliasNodes) {
-			aliases.add((LiteralCommandNode<Object>) commandNode);
-		}
-		getBukkit().postCommandRegistration(registeredCommand, (LiteralCommandNode<Object>) resultantNode, aliases);
+		CommandAPIPaper.<Source>getBukkit().postCommandRegistration(registeredCommand, resultantNode, aliasNodes);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public LiteralCommandNode<Source> registerCommandNode(LiteralArgumentBuilder<Source> node, String namespace) {
-		return (LiteralCommandNode<Source>) getBukkit().registerCommandNode((LiteralArgumentBuilder<Object>) node, namespace);
+		return CommandAPIPaper.<Source>getBukkit().registerCommandNode(node, namespace);
 	}
 
 	@Override
@@ -291,16 +282,14 @@ public abstract class CommandAPIPaper<Source> implements BukkitPlatform<Source>,
 		bukkit.unregister(commandName, unregisterNamespaces);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public CommandDispatcher<Source> getBrigadierDispatcher() {
-		return (CommandDispatcher<Source>) bukkit.getBrigadierDispatcher();
+		return CommandAPIPaper.<Source>getBukkit().getBrigadierDispatcher();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void createDispatcherFile(File file, CommandDispatcher<Source> dispatcher) throws IOException {
-		getBukkit().createDispatcherFile(file, (CommandDispatcher<Object>) dispatcher);
+		CommandAPIPaper.<Source>getBukkit().createDispatcherFile(file, dispatcher);
 	}
 
 	@Override
