@@ -29,6 +29,8 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 	private static final boolean vanillaCommandDispatcherFieldExists;
 	private static final Commands vanillaCommandDispatcher;
 
+	private NMS_1_20_R4 bukkitNMS;
+
 	static {
 		if (Bukkit.getServer() instanceof CraftServer server) {
 			COMMAND_BUILD_CONTEXT = CommandBuildContext.simple(server.getServer().registryAccess(),
@@ -65,7 +67,10 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_20_R4();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_20_R4();
+		}
+		return bukkitNMS;
 	}
 
 	@Override
@@ -74,7 +79,7 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 			return new SpigotCommandRegistration<>(
 				vanillaCommandDispatcher.getDispatcher(),
 				(SimpleCommandMap) getCommandMap(),
-				() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+				() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 				command -> command instanceof VanillaCommandWrapper,
 				node -> new VanillaCommandWrapper(vanillaCommandDispatcher, node),
 				node -> node.getCommand() instanceof BukkitCommandWrapper
@@ -90,7 +95,7 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 //				throw new IllegalStateException("Expected to find class", e);
 //			}
 			return new PaperCommandRegistration<>(
-				() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+				() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 				node -> node.getCommand() instanceof BukkitCommandNode
 			);
 		}

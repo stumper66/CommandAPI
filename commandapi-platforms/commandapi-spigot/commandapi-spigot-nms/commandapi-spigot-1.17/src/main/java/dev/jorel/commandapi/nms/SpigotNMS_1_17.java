@@ -16,6 +16,8 @@ import org.bukkit.craftbukkit.v1_17_R1.command.VanillaCommandWrapper;
 
 public class SpigotNMS_1_17 extends SpigotNMS_1_17_Common {
 
+	private NMS_1_17 bukkitNMS;
+
 	@Override
 	public BaseComponent[] getChat(CommandContext<CommandSourceStack> cmdCtx, String key) throws CommandSyntaxException {
 		return ComponentSerializer.parse(Component.Serializer.toJson(MessageArgument.getMessage(cmdCtx, key)));
@@ -28,7 +30,10 @@ public class SpigotNMS_1_17 extends SpigotNMS_1_17_Common {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_17();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_17();
+		}
+		return bukkitNMS;
 	}
 
 }

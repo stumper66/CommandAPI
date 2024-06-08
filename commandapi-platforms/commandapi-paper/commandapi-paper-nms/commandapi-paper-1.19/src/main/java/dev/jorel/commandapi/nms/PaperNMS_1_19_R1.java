@@ -1,17 +1,13 @@
 package dev.jorel.commandapi.nms;
 
-import com.mojang.brigadier.tree.CommandNode;
-import dev.jorel.commandapi.CommandAPIBukkit;
 import io.netty.channel.Channel;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.MinecraftServer;
-import org.bukkit.command.Command;
-import org.bukkit.craftbukkit.v1_19_R1.command.VanillaCommandWrapper;
 import org.bukkit.craftbukkit.v1_19_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class PaperNMS_1_19_R1 extends PaperNMS_1_19_Common {
+
+	private NMS_1_19_R1 bukkitNMS;
 
 	@Override
 	protected void hookChatPreview(Plugin plugin, Player player) {
@@ -23,7 +19,10 @@ public class PaperNMS_1_19_R1 extends PaperNMS_1_19_Common {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_19_R1();
+		if (bukkitNMS == null) {
+			bukkitNMS = new NMS_1_19_R1();
+		}
+		return bukkitNMS;
 	}
 
 }

@@ -3,7 +3,6 @@ package dev.jorel.commandapi.test;
 import com.google.gson.JsonParseException;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.serialization.JsonOps;
 import dev.jorel.commandapi.Brigadier;
 import dev.jorel.commandapi.CommandAPIBukkit;
@@ -43,7 +42,6 @@ import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.craftbukkit.v1_20_R4.CraftRegistry;
 import org.bukkit.craftbukkit.v1_20_R4.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -84,6 +82,8 @@ public class MockNMS extends ArgumentNMS {
 	Map<ResourceLocation, CommandFunction> functions = new HashMap<>();
 	Map<ResourceLocation, Collection<CommandFunction>> tags = new HashMap<>();
 	Stack<Integer> functionCallbackResults = new Stack<>();
+
+	private NMS_1_20_R4 bukkitNMS;
 
 	public MockNMS(CommandAPISpigot<?> baseNMS) {
 		super(baseNMS);
@@ -244,7 +244,10 @@ public class MockNMS extends ArgumentNMS {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_20_R4();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_20_R4();
+		}
+		return bukkitNMS;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -23,6 +23,8 @@ import org.bukkit.craftbukkit.v1_16_R3.command.VanillaCommandWrapper;
 
 public class PaperNMS_1_16_R3 extends CommandAPIPaper<CommandListenerWrapper> {
 
+	private NMS_1_16_R3 bukkitNMS;
+
 	@Override
 	public final Component getChat(CommandContext<CommandListenerWrapper> cmdCtx, String key) throws CommandSyntaxException {
 		return GsonComponentSerializer.gson().deserialize(IChatBaseComponent.ChatSerializer.a(ArgumentChat.a(cmdCtx, key)));
@@ -41,17 +43,20 @@ public class PaperNMS_1_16_R3 extends CommandAPIPaper<CommandListenerWrapper> {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_16_R3();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_16_R3();
+		}
+		return bukkitNMS;
 	}
 
 	@Override
 	public CommandRegistrationStrategy<CommandListenerWrapper> createCommandRegistrationStrategy() {
 		return new SpigotCommandRegistration<>(
-			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.a(),
+			bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.a(),
 			(SimpleCommandMap) getCommandMap(),
-			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommandDispatcher().a(),
+			() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommandDispatcher().a(),
 			command -> command instanceof VanillaCommandWrapper,
-			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> new VanillaCommandWrapper(bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
 			node -> node.getCommand() instanceof BukkitCommandWrapper
 		);
 	}

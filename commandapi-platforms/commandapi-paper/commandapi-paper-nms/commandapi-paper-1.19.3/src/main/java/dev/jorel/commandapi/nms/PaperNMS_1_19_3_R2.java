@@ -20,6 +20,8 @@ import org.bukkit.craftbukkit.v1_19_R2.command.VanillaCommandWrapper;
 
 public class PaperNMS_1_19_3_R2 extends PaperNMS_CommonWithFunctions {
 
+	private NMS_1_19_3_R2 bukkitNMS;
+
 	@Override
 	public NamedTextColor getChatColor(CommandContext<CommandSourceStack> cmdCtx, String key) {
 		final Integer color = ColorArgument.getColor(cmdCtx, key).getColor();
@@ -33,18 +35,21 @@ public class PaperNMS_1_19_3_R2 extends PaperNMS_CommonWithFunctions {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_19_3_R2();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_19_3_R2();
+		}
+		return bukkitNMS;
 	}
 
 	@Override
 	@Differs(from = "1.19, 1.19.1, 1.19.2", by = "MinecraftServer#aC -> MinecraftServer#aB")
 	public CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy() {
 		return new SpigotCommandRegistration<>(
-			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
+			bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
 			(SimpleCommandMap) getCommandMap(),
-			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+			() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 			command -> command instanceof VanillaCommandWrapper,
-			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> new VanillaCommandWrapper(bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
 			node -> node.getCommand() instanceof BukkitCommandWrapper
 		);
 	}

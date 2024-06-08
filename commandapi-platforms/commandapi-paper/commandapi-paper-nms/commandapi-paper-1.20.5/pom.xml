@@ -22,10 +22,10 @@
 			<id>minecraft-libraries</id>
 			<url>https://libraries.minecraft.net</url>
 		</repository>
-		<repository>
-			<id>codemc-repo</id>
-			<url>https://repo.codemc.io/repository/nms/</url>
-		</repository>
+<!--		<repository>-->
+<!--			<id>codemc-repo</id>-->
+<!--			<url>https://repo.codemc.io/repository/nms/</url>-->
+<!--		</repository>-->
 		<repository>
 			<id>papermc</id>
 			<url>https://papermc.io/repo/repository/maven-public/</url>
@@ -56,17 +56,17 @@
 <!--			<classifier>remapped-mojang</classifier>-->
 <!--			<scope>provided</scope>-->
 <!--		</dependency>-->
-		<dependency>
-			<groupId>ca.bkaw</groupId>
-			<artifactId>paper-nms</artifactId>
-			<version>1.20.6-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
 		<!-- Libraries -->
 		<dependency>
 			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper-api</artifactId>
 			<version>${paper.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>ca.bkaw</groupId>
+			<artifactId>paper-nms</artifactId>
+			<version>1.20.6-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -75,12 +75,12 @@
 			<groupId>dev.jorel</groupId>
 			<artifactId>commandapi-paper-core</artifactId>
 			<version>${project.version}</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>dev.jorel</groupId>
 			<artifactId>commandapi-bukkit-1.20.5</artifactId>
 			<version>${project.version}</version>
+			<classifier>mojang-mapped</classifier>
 		</dependency>
 
 		<dependency>
@@ -94,22 +94,22 @@
 
 	<build>
 		<plugins>
-			<!-- Generate Mojang mapped jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>Mojang-Mapped</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<classifier>mojang-mapped</classifier>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--			&lt;!&ndash; Generate Mojang mapped jar &ndash;&gt;-->
+<!--			<plugin>-->
+<!--				<groupId>org.apache.maven.plugins</groupId>-->
+<!--				<artifactId>maven-jar-plugin</artifactId>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>Mojang-Mapped</id>-->
+<!--						<goals>-->
+<!--							<goal>jar</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<classifier>mojang-mapped</classifier>-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 <!--			&lt;!&ndash; Generate Spigot mapped jar &ndash;&gt;-->
 <!--			<plugin>-->
 <!--				<groupId>net.md-5</groupId>-->
@@ -148,14 +148,6 @@
 				<groupId>ca.bkaw</groupId>
 				<artifactId>paper-nms-maven-plugin</artifactId>
 				<version>1.4.4</version>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>remap</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<!-- Allow code coverage -->
 			<plugin>

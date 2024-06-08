@@ -2,9 +2,14 @@ package dev.jorel.commandapi.nms;
 
 public class PaperNMS_1_17_R1 extends PaperNMS_1_17_Common {
 
+	private NMS_1_17_R1 bukkitNMS;
+
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_17_R1();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_17_R1();
+		}
+		return bukkitNMS;
 	}
 
 }

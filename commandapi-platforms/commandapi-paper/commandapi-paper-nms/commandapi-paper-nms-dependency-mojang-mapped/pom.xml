@@ -43,8 +43,7 @@
 		<dependency>
 			<groupId>dev.jorel</groupId>
 			<artifactId>commandapi-paper-1.20.5</artifactId>
-			<version>${project.version}</version>
-			<classifier>mojang-mapped</classifier>
+			<version>${project.version}</version> <!-- 1.20.5+ always is Mojang mapped -->
 		</dependency>
 		<dependency>
 			<groupId>dev.jorel</groupId>

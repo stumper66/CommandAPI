@@ -84,6 +84,8 @@ public class MockNMS extends ArgumentNMS {
 	Map<ResourceLocation, CommandFunction> functions = new HashMap<>();
 	Map<ResourceLocation, Collection<CommandFunction>> tags = new HashMap<>();
 
+	private NMS_1_19_1_R1 bukkitNMS;
+
 	public MockNMS(CommandAPIPaper<?> baseNMS) {
 		super(baseNMS);
 
@@ -217,7 +219,10 @@ public class MockNMS extends ArgumentNMS {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_19_1_R1();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_19_1_R1();
+		}
+		return bukkitNMS;
 	}
 
 	@SuppressWarnings("unchecked")

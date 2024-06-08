@@ -74,6 +74,8 @@ public class MockNMS extends ArgumentNMS {
 	Map<MinecraftKey, CustomFunction> functions = new HashMap<>();
 	Map<MinecraftKey, Collection<CustomFunction>> tags = new HashMap<>();
 
+	private NMS_1_16_R3 bukkitNMS;
+
 	@SuppressWarnings("unchecked")
 	public MockNMS(CommandAPISpigot<?> baseNMS) {
 		super(baseNMS);
@@ -215,7 +217,10 @@ public class MockNMS extends ArgumentNMS {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return (NMS<?>) new NMS_1_16_R3();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_16_R3();
+		}
+		return bukkitNMS;
 	}
 
 	@Override

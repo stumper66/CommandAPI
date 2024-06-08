@@ -25,6 +25,8 @@ public class SpigotNMS_1_21_R1 extends SpigotNMS_Common {
 
 	private static final CommandBuildContext COMMAND_BUILD_CONTEXT;
 
+	private NMS_1_21_R1 bukkitNMS;
+
 	static {
 		if (Bukkit.getServer() instanceof CraftServer server) {
 			COMMAND_BUILD_CONTEXT = CommandBuildContext.simple(server.getServer().registryAccess(),
@@ -46,17 +48,20 @@ public class SpigotNMS_1_21_R1 extends SpigotNMS_Common {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_21_R1();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_21_R1();
+		}
+		return bukkitNMS;
 	}
 
 	@Override
 	public CommandRegistrationStrategy<CommandSourceStack> createCommandRegistrationStrategy() {
 		return new SpigotCommandRegistration<>(
-			((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
+			bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher.getDispatcher(),
 			(SimpleCommandMap) getCommandMap(),
-			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+			() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 			command -> command instanceof VanillaCommandWrapper,
-			node -> new VanillaCommandWrapper(((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
+			node -> new VanillaCommandWrapper(bukkitNMS.<MinecraftServer>getMinecraftServer().vanillaCommandDispatcher, node),
 			node -> node.getCommand() instanceof BukkitCommandWrapper
 		);
 	}

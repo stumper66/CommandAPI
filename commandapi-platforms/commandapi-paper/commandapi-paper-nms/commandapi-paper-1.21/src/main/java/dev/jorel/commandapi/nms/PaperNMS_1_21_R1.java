@@ -22,6 +22,8 @@ public class PaperNMS_1_21_R1 extends PaperNMS_Common {
 
 	private static final CommandBuildContext COMMAND_BUILD_CONTEXT;
 
+	private NMS_1_21_R1 bukkitNMS;
+
 	static {
 		if (Bukkit.getServer() instanceof CraftServer server) {
 			COMMAND_BUILD_CONTEXT = CommandBuildContext.simple(server.getServer().registryAccess(),
@@ -44,7 +46,10 @@ public class PaperNMS_1_21_R1 extends PaperNMS_Common {
 
 	@Override
 	public NMS<?> bukkitNMS() {
-		return new NMS_1_21_R1();
+		if (bukkitNMS == null) {
+			this.bukkitNMS = new NMS_1_21_R1();
+		}
+		return bukkitNMS;
 	}
 
 	@Override
@@ -59,7 +64,7 @@ public class PaperNMS_1_21_R1 extends PaperNMS_Common {
 			throw new IllegalStateException("Expected to find class", e);
 		}
 		return new PaperCommandRegistration<>(
-			() -> ((CommandAPIBukkit<?>) bukkitNMS()).<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
+			() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 			node -> bukkitCommandNode_bukkitBrigCommand.isInstance(node.getCommand())
 		);
 	}
