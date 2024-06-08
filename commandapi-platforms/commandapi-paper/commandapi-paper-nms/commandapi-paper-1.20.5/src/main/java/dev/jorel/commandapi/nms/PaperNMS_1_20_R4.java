@@ -1,7 +1,7 @@
 package dev.jorel.commandapi.nms;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
-import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandRegistrationStrategy;
 import dev.jorel.commandapi.PaperCommandRegistration;
 import dev.jorel.commandapi.SpigotCommandRegistration;
@@ -96,7 +96,10 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 //			}
 			return new PaperCommandRegistration<>(
 				() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
-				node -> node.getCommand() instanceof BukkitCommandNode
+				node -> {
+					Command<?> command = node.getCommand();
+					return command instanceof BukkitCommandNode.BukkitBrigCommand;
+				}
 			);
 		}
 	}
