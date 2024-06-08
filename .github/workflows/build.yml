@@ -54,6 +54,11 @@ jobs:
 
       ### Compilation ###
 
+      - name: Setup Paper NMS
+        run: |
+            cd commandapi-platforms/commandapi-paper/commandapi-paper-nms/commandapi-paper-1.20.5
+            mvn paper-nms:init
+
       - name: Build the CommandAPI (Bukkit+Velocity) using maven
         run: mvn clean install --batch-mode -P Platform.Bukkit,Platform.Velocity
 
