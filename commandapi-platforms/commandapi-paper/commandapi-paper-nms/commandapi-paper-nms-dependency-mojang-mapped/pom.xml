@@ -16,9 +16,9 @@
 		<!-- Common NMS for 1.17+ -->
 		<dependency>
 			<groupId>dev.jorel</groupId>
-			<artifactId>commandapi-paper-nms-common</artifactId>
+			<artifactId>commandapi-paper-nms-common-mojang-mapped</artifactId>
 			<version>${project.version}</version>
-			<classifier>mojang-mapped</classifier>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>dev.jorel</groupId>
