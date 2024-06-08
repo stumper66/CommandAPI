@@ -58,6 +58,7 @@
 									<artifact>dev.jorel:commandapi-core</artifact>
 									<excludes>
 										<exclude>dev/jorel/commandapi/CommandAPIVersionHandler**</exclude>
+										<exclude>dev/jorel/commandapi/MojangMappedVersionHandler**</exclude>
 									</excludes>
 								</filter>
 							</filters>
