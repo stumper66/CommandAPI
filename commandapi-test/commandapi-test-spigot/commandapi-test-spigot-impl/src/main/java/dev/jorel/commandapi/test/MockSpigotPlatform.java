@@ -59,22 +59,14 @@ public abstract class MockSpigotPlatform<CLW> extends CommandAPISpigot<CLW> impl
 	 * CommandAPIPaper implementations *
 	 ************************************/
 
-	private CommandDispatcher<CLW> dispatcher = null;
-	private CommandDispatcher<CLW> resourcesDispatcher = null;
+	private final CommandDispatcher<CLW> brigadierDispatcher = new CommandDispatcher<>();
+	private final CommandDispatcher<CLW> resourcesDispatcher = new CommandDispatcher<>();
 
-	@Override
-	public final CommandDispatcher<CLW> getBrigadierDispatcher() {
-		if (this.dispatcher == null) {
-			this.dispatcher = new CommandDispatcher<>();
-		}
-		return this.dispatcher;
+	public final CommandDispatcher<CLW> getMockBrigadierDispatcher() {
+		return this.brigadierDispatcher;
 	}
 
-	@Override
-	public CommandDispatcher<CLW> getResourcesDispatcher() {
-		if (this.resourcesDispatcher == null) {
-			this.resourcesDispatcher = new CommandDispatcher<>();
-		}
+	public final CommandDispatcher<CLW> getMockResourcesDispatcher() {
 		return this.resourcesDispatcher;
 	}
 

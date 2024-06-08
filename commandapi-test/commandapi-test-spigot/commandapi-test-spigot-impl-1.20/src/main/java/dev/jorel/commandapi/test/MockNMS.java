@@ -219,11 +219,6 @@ public class MockNMS extends ArgumentNMS {
 	}
 
 	@Override
-	public Command wrapToVanillaCommandWrapper(CommandNode<CommandSourceStack> node) {
-		return baseNMS.wrapToVanillaCommandWrapper(node);
-	}
-
-	@Override
 	public NMS<?> bukkitNMS() {
 		if (bukkitNMS == null) {
 			this.bukkitNMS = new NMS_1_20_R1();

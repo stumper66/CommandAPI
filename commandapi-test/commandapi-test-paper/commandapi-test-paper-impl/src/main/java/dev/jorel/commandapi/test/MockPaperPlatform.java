@@ -59,14 +59,15 @@ public abstract class MockPaperPlatform<CLW> extends CommandAPIPaper<CLW> implem
 	 * CommandAPIPaper implementations *
 	 ************************************/
 
-	private CommandDispatcher<CLW> dispatcher = null;
+	private final CommandDispatcher<CLW> brigadierDispatcher = new CommandDispatcher<>();
+	private final CommandDispatcher<CLW> resourcesDispatcher = new CommandDispatcher<>();
 
-	@Override
-	public final CommandDispatcher<CLW> getBrigadierDispatcher() {
-		if (this.dispatcher == null) {
-			this.dispatcher = new CommandDispatcher<>();
-		}
-		return this.dispatcher;
+	public final CommandDispatcher<CLW> getMockBrigadierDispatcher() {
+		return this.brigadierDispatcher;
+	}
+
+	public final CommandDispatcher<CLW> getMockResourcesDispatcher() {
+		return this.resourcesDispatcher;
 	}
 
 	@Override
