@@ -85,15 +85,6 @@ public class PaperNMS_1_20_R4 extends PaperNMS_Common {
 				node -> node.getCommand() instanceof BukkitCommandWrapper
 			);
 		} else {
-			// This class is Paper-server specific, so we need to use paper's userdev plugin to
-			//  access it directly. That might need gradle, but there might also be a maven version?
-			//  https://discord.com/channels/289587909051416579/1121227200277004398/1246910745761812480
-//			Class<?> bukkitCommandNode_bukkitBrigCommand;
-//			try {
-//				bukkitCommandNode_bukkitBrigCommand = Class.forName("io.papermc.paper.command.brigadier.bukkit.BukkitCommandNode$BukkitBrigCommand");
-//			} catch (ClassNotFoundException e) {
-//				throw new IllegalStateException("Expected to find class", e);
-//			}
 			return new PaperCommandRegistration<>(
 				() -> bukkitNMS.<MinecraftServer>getMinecraftServer().getCommands().getDispatcher(),
 				node -> {

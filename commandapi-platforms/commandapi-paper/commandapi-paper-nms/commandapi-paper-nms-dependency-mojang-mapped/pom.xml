@@ -38,7 +38,6 @@
 			<groupId>dev.jorel</groupId>
 			<artifactId>commandapi-paper-1.21</artifactId>
 			<version>${project.version}</version>
-			<classifier>mojang-mapped</classifier>
 		</dependency>
 		<dependency>
 			<groupId>dev.jorel</groupId>
