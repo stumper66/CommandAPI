@@ -1,6 +1,3 @@
-echo "Setup Paper NMS for version 1.17.1..."
-mvn --quiet paper-nms:init -pl :commandapi-paper-1.17.1 -P Platform.Paper
-
 echo "Setup Paper NMS for version 1.18..."
 mvn --quiet paper-nms:init -pl :commandapi-paper-1.18 -P Platform.Paper
 

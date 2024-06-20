@@ -102,6 +102,7 @@
 				<executions>
 					<execution>
 						<id>Mojang-Mapped</id>
+						<phase>compile</phase>
 						<goals>
 							<goal>jar</goal>
 						</goals>
